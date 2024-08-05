@@ -30,6 +30,9 @@ dependencies {
 	// implementation 'javax.servlet:jstl' spring 3.x.x 버전에서 사용 안됨
 	implementation group: 'org.glassfish.web', name: 'jakarta.servlet.jsp.jstl', version: '3.0.0'
 
+	// tools xml 파일 error check 
+	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	compileOnly 'org.projectlombok:lombok'
