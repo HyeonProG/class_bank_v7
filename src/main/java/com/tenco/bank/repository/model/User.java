@@ -16,9 +16,9 @@ import lombok.ToString;
 public class User {
 
 	private Integer id;
-	private String userName;
+	private String username;
 	private String password;
-	private String fullName;
+	private String fullname;
 	private Timestamp createdAt;
 	
 }

@@ -26,7 +26,7 @@ public class Test1Controller {
 		}
 
 		
-		return User.builder().userName("길동").password("asd123").build();
+		return User.builder().username("길동").password("asd123").build();
 	}
 
 }
