@@ -8,7 +8,7 @@ server:
 spring:
   mvc:
     view: 
-      prefix: /WEB-INF/view # JSP파일이 위치한 디렉터리 접두사를 설정
+      prefix: /WEB-INF/view/ # JSP파일이 위치한 디렉터리 접두사를 설정
       suffix: .jsp # view 이름에 자동을 추가될 파일 확장자를 설정
   datasource:
     url: jdbc:h2:mem:bankdb;MODE=MySQL # 데이터베이스 연결을 위한 URL을 설정
