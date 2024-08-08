@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tenco.bank.dto.DepositDTO;
 import com.tenco.bank.dto.SaveDTO;
 import com.tenco.bank.dto.WithdrawDTO;
 import com.tenco.bank.handler.exception.DataDeliveryException;
@@ -74,7 +75,7 @@ public class AccountService {
 	// 5. 출금 처리 -- update
 	// 6. 거래 내역 등록 -- insert(history_tb)
 	// 7. 트랜잭션 처리
-	
+
 	@Transactional
 	public void updateAccountWithdraw(WithdrawDTO dto, Integer principalId) {
 		// 1. 계좌 존재 여부 확인
@@ -105,6 +106,48 @@ public class AccountService {
 		history.setDBalance(null);
 		history.setWAccountId(accountEntity.getId());
 		history.setDAccountId(null);
+
+		int rowResultCount = historyRepository.insert(history);
+		if (rowResultCount != 1) {
+			throw new DataDeliveryException(Define.FAILED_PROCESSING, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	// 입금 기능
+	@Transactional
+	public void updateAccountDeposit(DepositDTO dto, Integer principalId) {
+
+		// 1. 계좌 존재 여부
+		Account accountEntity = accountRepository.findByNumber(dto.getDAccountNumber());
+		if (accountEntity == null) {
+			throw new DataDeliveryException(Define.NOT_EXIST_ACCOUNT, HttpStatus.BAD_REQUEST);
+		}
+
+		// 2. 본인 계좌 여부 확인
+		accountEntity.checkOwner(principalId);
+
+		// 3. 입금 처리 기능
+		// accountEntity 객체의 잔액을 변경하고 업데이트 처리해야 한다.
+		accountEntity.deposit(dto.getAmount());
+		// update 처리
+		accountRepository.updateById(accountEntity);
+
+		// 4. 거래 내역 등록
+//		History history = new History();
+//		history.setAmount(dto.getAmount());
+//		history.setWBalance(null);
+//		history.setDBalance(accountEntity.getBalance());
+//		history.setWAccountId(null);
+//		history.setDAccountId(accountEntity.getId());
+		
+		History history = History.builder()
+	            .amount(dto.getAmount())
+	            .dAccountId(accountEntity.getId())
+	            .dBalance(accountEntity.getBalance())
+	            .wAccountId(null)
+	            .wBalance(null)
+	            .build();
 
 		int rowResultCount = historyRepository.insert(history);
 		if (rowResultCount != 1) {
