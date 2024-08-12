@@ -7,8 +7,6 @@
 <div class="col-sm-8">
 	<h2>계좌 생성(인증)</h2>
 	<h5>Bank App에 오신걸 환영합니다</h5>
-	<!-- 로그인은 예외적으로 보안 때문에 post로 처리하는것이 좋다 -->
-	<!-- insert into account_tb(number, password, balance, user_id, created_at) -->
 	<form action="/account/save" method="post">
 		<div class="form-group">
 			<label for="number">number:</label> 
