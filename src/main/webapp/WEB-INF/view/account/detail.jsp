@@ -40,6 +40,26 @@
 			</c:forEach>
 			</tbody>
 		</table>
+		<br>
+		<!-- Pagination -->
+		<div class="d-flex justify-content-center">
+			<ul class="pagination">
+				<!-- 이전 페이지 링크 -->
+				<li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>">
+				<a class="page-link" href="?type=${type}&page=${currentPage - 1}&size=${size}">이전</a>
+				</li>
+				<!-- 현재 페이지 -->
+				<c:forEach begin="1" end="${totalPages}" var="page">
+				<li class="page-item <c:if test='${page == currentPage}'> active </c:if>">
+				<a class="page-link" href="?type=${type}&page=${page}&size=${size}">${page}</a>
+				</li>
+				</c:forEach>
+				<!-- 다음 페이지 -->
+				<li class="page-item <c:if test='${currentPage == totalPages}'>disabled</c:if>">
+				<a class="page-link" href="?type=${type}&page=${currentPage + 1}&size=${size}">다음</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 	
 </div>

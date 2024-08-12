@@ -47,6 +47,7 @@
 			left join account_tb as da 
 			on h.d_account_id = da.id  
 			where h.w_account_id = #{accountId} or h.d_account_id = #{accountId}
+			limit #{limit} offset #{offset}
 		</if>
 		<if test="type == 'deposit'">
 			select h.id, h.amount, h.d_balance as balance, h.created_at,
@@ -58,6 +59,7 @@
 			left join account_tb as da
 			on da.id = h.d_account_id
 			where h.d_account_id = #{accountId}
+			limit #{limit} offset #{offset}
 		</if>
 		<if test="type == 'withdraw'">
 			select h.id, h.amount, h.w_balance as balance, h.created_at,
@@ -69,7 +71,28 @@
 			left join account_tb as da
 			on da.id = h.d_account_id
 			where h.w_account_id = #{accountId}
+			limit #{limit} offset #{offset}
 		</if>
 	</select>
+	
+	<select id="countByAccountIdAndType" resultType="int">
+		<if test="type == 'all'">
+			select count(*)
+			from history_tb as h 
+			where h.w_account_id = #{accountId} OR h.d_account_id = #{accountId}
+		</if>
+		<if test="type == 'deposit'">
+			select count(*)
+			from history_tb as h 
+			where h.d_account_id = #{accountId}
+		</if>
+		
+		<if test="type == 'withdraw'">
+			select count(*)
+			from history_tb as h 
+			where h.w_account_id = #{accountId}
+		</if>
+	</select>
+	
 	
 </mapper>

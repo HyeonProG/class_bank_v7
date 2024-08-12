@@ -257,43 +257,51 @@ public class AccountController {
 		if (dto.getDAccountNumber() == null || dto.getDAccountNumber().trim().isEmpty()) {
 			throw new DataDeliveryException(Define.ENTER_YOUR_ACCOUNT_NUMBER, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		accountService.updateAccountTransfer(dto, principal.getId());
-		
+
 		return "redirect:/account/list";
 	}
-	
-	
+
 	/**
-	 * 계좌 상세 보기 페이지
-	 * 주소 설계 : http://localhost:8080/account/detail/${account.id}?type=all, deposit, withdraw
+	 * 계좌 상세 보기 페이지 주소 설계 :
+	 * http://localhost:8080/account/detail/${account.id}?type=all, deposit,
+	 * withdraw
+	 * 
 	 * @return
 	 */
 	@GetMapping("/detail/{accountId}")
-	public String detail(@PathVariable(name = "accountId") Integer accountId, @RequestParam(required = false, name = "type") String type, Model model) {
+	public String detail(@PathVariable(name = "accountId") Integer accountId,
+			@RequestParam(required = false, name = "type") String type,
+			@RequestParam(name = "page", defaultValue = "1") int page,
+			@RequestParam(name = "size", defaultValue = "2") int size, Model model) {
 		// 1. 인증 검사
 		User principal = (User) session.getAttribute(Define.PRINCIPAL);
 		if (principal == null) {
 			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
 		}
-		
+
 		// 유효성 검사
 		List<String> validTypes = Arrays.asList("all", "deposit", "withdraw");
 		if (!validTypes.contains(type)) {
 			throw new DataDeliveryException("유효하지 않은 접근 입니다.", HttpStatus.BAD_REQUEST);
 		}
-		
+
+		// 페이지 개수를 계산하기 위해서 총 페이지 수를 계산해야 한다.
+		int totalRecords = accountService.countHistoryByAccountIdAndType(type, accountId);
+		int totalPages = (int) Math.ceil((double) totalRecords / size);
+
 		Account account = accountService.readAccountById(accountId);
-		List<HistoryAccount> historyList = accountService.readHistoryByAccountId(type, accountId);
-		
-		
-		
-		System.out.println("@PathVariable : " + accountId);
-		System.out.println("@RequestParam : " + type);
-		
+		List<HistoryAccount> historyList = accountService.readHistoryByAccountId(type, accountId, page, size);
+
 		model.addAttribute("account", account);
 		model.addAttribute("historyList", historyList);
-		
+
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("type", type);
+		model.addAttribute("size", size);
+
 		return "account/detail";
 	}
 
