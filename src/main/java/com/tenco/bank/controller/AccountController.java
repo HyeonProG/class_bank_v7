@@ -3,6 +3,7 @@ package com.tenco.bank.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +19,6 @@ import com.tenco.bank.dto.SaveDTO;
 import com.tenco.bank.dto.TransferDTO;
 import com.tenco.bank.dto.WithdrawDTO;
 import com.tenco.bank.handler.exception.DataDeliveryException;
-import com.tenco.bank.handler.exception.UnAuthorizedException;
 import com.tenco.bank.repository.model.Account;
 import com.tenco.bank.repository.model.HistoryAccount;
 import com.tenco.bank.repository.model.User;
@@ -26,20 +26,18 @@ import com.tenco.bank.service.AccountService;
 import com.tenco.bank.utils.Define;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller // IoC 대상(싱글톤으로 관리)
 @RequestMapping("/account")
+@RequiredArgsConstructor
 public class AccountController {
 
 	// 계좌 생성 화면 요청 - DI 처리
+	@Autowired
 	private final HttpSession session;
 	private final AccountService accountService;
 
-	// @Autowired
-	public AccountController(HttpSession session, AccountService accountService) {
-		this.session = session;
-		this.accountService = accountService;
-	}
 
 	/**
 	 * 계좌 생성 페이지 요청 주소 설계 : http://localhost:8080/account/save
