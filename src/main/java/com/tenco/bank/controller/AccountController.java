@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.tenco.bank.dto.DepositDTO;
 import com.tenco.bank.dto.SaveDTO;
@@ -47,12 +48,6 @@ public class AccountController {
 	 */
 	@GetMapping("/save")
 	public String savePage() {
-		// 1. 인증 검사 필요(account 전체가 필요함)
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
-
 		return "account/save";
 	}
 
@@ -62,13 +57,7 @@ public class AccountController {
 	 * @return 추후 계좌 목록 페이지 이동 처리
 	 */
 	@PostMapping("/save")
-	public String saveProc(SaveDTO dto) {
-		// 1. form 데이터 추출(파싱 전략) - SaveDTO
-		// 2. 인증 검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
+	public String saveProc(SaveDTO dto, @SessionAttribute(Define.PRINCIPAL) User principal) {
 
 		// 3. 유효성 검사
 		if (dto.getNumber() == null || dto.getNumber().isEmpty()) {
@@ -86,7 +75,7 @@ public class AccountController {
 		// 4. 서비스 호출 - AccountService
 		accountService.createAccount(dto, principal.getId());
 
-		return "redirect:/index";
+		return "redirect:/account/list";
 	}
 
 	/**
@@ -95,12 +84,7 @@ public class AccountController {
 	 * @return
 	 */
 	@GetMapping({ "/list", "/" })
-	public String listPage(Model model) {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
+	public String listPage(Model model, @SessionAttribute(Define.PRINCIPAL) User principal) {
 
 		// 2. 유효성 검사
 
@@ -126,12 +110,6 @@ public class AccountController {
 	 */
 	@GetMapping("/withdraw")
 	public String withdrawPage() {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
-
 		return "account/withdraw";
 	}
 
@@ -142,12 +120,7 @@ public class AccountController {
 	 * @return
 	 */
 	@PostMapping("/withdraw")
-	public String withdrawProc(WithdrawDTO dto) {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
+	public String withdrawProc(WithdrawDTO dto, @SessionAttribute(Define.PRINCIPAL) User principal) {
 
 		// 유효성 검사(자바 코드로 개발) --> 스프링 부트 @Valid 라이브러리가 존재
 		if (dto.getAmount() == null) {
@@ -174,12 +147,6 @@ public class AccountController {
 	 */
 	@GetMapping("/deposit")
 	public String depositPage() {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
-
 		return "account/deposit";
 	}
 
@@ -187,12 +154,7 @@ public class AccountController {
 	 * 입금 처리 기능
 	 */
 	@PostMapping("/deposit")
-	public String depositProc(DepositDTO dto) {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
+	public String depositProc(DepositDTO dto, @SessionAttribute(Define.PRINCIPAL) User principal) {
 
 		// 유효성 검사
 		if (dto.getAmount() == null) {
@@ -217,12 +179,6 @@ public class AccountController {
 	 */
 	@GetMapping("/transfer")
 	public String transferPage() {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
-
 		return "account/transfer";
 	}
 
@@ -230,12 +186,7 @@ public class AccountController {
 	 * 이체 기능 처리
 	 */
 	@PostMapping("/transfer")
-	public String transferProc(TransferDTO dto) {
-		// 1. 인증검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
+	public String transferProc(TransferDTO dto, @SessionAttribute(Define.PRINCIPAL) User principal) {
 
 		// 유효성 검사
 		if (dto.getAmount() == null) {
@@ -275,11 +226,6 @@ public class AccountController {
 			@RequestParam(required = false, name = "type") String type,
 			@RequestParam(name = "page", defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "2") int size, Model model) {
-		// 1. 인증 검사
-		User principal = (User) session.getAttribute(Define.PRINCIPAL);
-		if (principal == null) {
-			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
-		}
 
 		// 유효성 검사
 		List<String> validTypes = Arrays.asList("all", "deposit", "withdraw");
