@@ -18,13 +18,13 @@ public class GlobalControllerAdvice {
 	 * 로깅 처리 - 동기적 방식(System.out.println), 비동기 처리(slf4j)
 	 */
 	
-	@ExceptionHandler(Exception.class)
-	public void exception(Exception e) {
-		System.out.println("--------------------");
-		System.out.println(e.getClass().getName());
-		System.out.println(e.getMessage());
-		System.out.println("--------------------");
-	}
+//	@ExceptionHandler(Exception.class)
+//	public void exception(Exception e) {
+//		System.out.println("--------------------");
+//		System.out.println(e.getClass().getName());
+//		System.out.println(e.getMessage());
+//		System.out.println("--------------------");
+//	}
 	
 	
 	/**
