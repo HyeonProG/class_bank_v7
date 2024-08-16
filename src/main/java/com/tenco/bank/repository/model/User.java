@@ -22,9 +22,15 @@ public class User {
 	private String originFileName;
 	private String uploadFileName;
 	private Timestamp createdAt;
-
+	private boolean socialLogin;
+	
 	public String setUpUserImage() {
-		return uploadFileName == null ? "https://picsum.photos/id/1/350" : "/images/uploads/" + uploadFileName;
+		if (socialLogin == true) {
+			return originFileName;
+		} else {
+			return uploadFileName == null ? "https://picsum.photos/id/1/350" : "/images/uploads/" + uploadFileName;
+		}
+		
 	}
 	
 }
