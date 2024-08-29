@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<button type="button"> 중복 검사  </button>
+	<div id="result"></div>
+
+	<script type="text/javascript">
+		const btn = document.querySelector("button");
+		const username = "길동";
+		const resultElement = document.querySelector("#result");
+		btn.addEventListener("click", function() {
+			
+			// 비동기 통신(AJAX) - Fetch 함수 사용(GET 방식)
+			fetch(`http://localhost:8080/api-user/check-username?username=${username}`)
+			.then(response => response.json()) // 응답을 JSON 형식으로 반환
+			.then(isUse => {
+				console.log("결과 확인 ", isUse);
+				if(isUse) {
+					resultElement.textContent = "사용 가능";
+				} else {
+					resultElement.textContent = "중복된 이름입니다";
+				}
+			})
+			.catch( error => {
+				console.log("error ", error);
+				resultElement.textContent = "잘못된 요청입니다.";
+			});
+			
+		});
+	
+	</script>
+</body>
+</html>
